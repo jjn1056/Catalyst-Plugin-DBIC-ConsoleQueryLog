@@ -70,7 +70,7 @@ sub add_querylog_table_row {
   $t->row($q_sql, $q_total);
 };
 
-=head1 NAME
+i=head1 NAME
  
 Catalyst::Plugin::DBIC::ConsoleQueryLog - Log DBIC queries and timings to the console
 

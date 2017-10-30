@@ -1,0 +1,52 @@
+{
+   "abstract" : "A simple log to console for DBIC querylogs",
+   "author" : [
+      "John Napiorkowski <jjnapiork@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 6.009, CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "Catalyst-Plugin-DBIC-ConsoleQueryLog",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Catalyst" : "5.90060",
+            "Moo::Role" : "2.003002",
+            "Text::SimpleTable" : "2.03"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::Most" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/jjn1056/Catalyst-Plugin-DBIC-ConsoleQueryLog/issues"
+      },
+      "homepage" : "https://github.com/jjn1056/Catalyst-Plugin-DBIC-ConsoleQueryLog",
+      "repository" : {
+         "url" : "https://github.com/jjn1056/Catalyst-Plugin-DBIC-ConsoleQueryLog.git"
+      }
+   },
+   "version" : "0.001",
+   "x_serialization_backend" : "JSON::PP version 2.94"
+}

@@ -70,4 +70,75 @@ sub add_querylog_table_row {
   $t->row($q_sql, $q_total);
 };
 
+i=head1 NAME
+ 
+Catalyst::Plugin::DBIC::ConsoleQueryLog - Log DBIC queries and timings to the console
+
+=head1 SYNOPSIS
+ 
+Use the plugin in your application class:
+ 
+    package MyApp;
+
+    use Catalyst qw/DBIC::ConsoleQueryLog/;
+
+    __PACKAGE__->config(
+      'Plugin::DBIC::ConsoleQueryLog' => { model_name => 'Schema' },
+      'Model::Schema' => { # This is a model of Catalyst::Model::DBIC::Schema
+        schema_class => 'MyApp::Schema',
+        traits => ['QueryLog'], # Please note you NEED to use this trait.
+      },
+    );
+
+    __PACKAGE__->setup;
+ 
+=head1 DESCRIPTION
+ 
+This is a very basic console logger for L<DBIx::Class::QueryLog::Analyzer>, which you
+might be using in L<Catalyst> via L<Catalyst::TraitFor::Model::DBIC::Schema::QueryLog>
+in order to get tracing and performance information on you SQL calls.  You must be
+using L<Catalyst::Model::DBIC::Schema> and have added the L<Catalyst::TraitFor::Model::DBIC::Schema::QueryLog>
+trait in configuration as in the L</SYNOPSIS> example.
+
+I wrote this because I got tired of adding it manually over and over to my basic
+application framework.  However its a very basic logger that doesn't support some of
+the more powerful bits such as creating buckets to classify you logging, etc.  It will
+get you started but eventually you'll need to roll your own as you needs become more complex.
+
+Console logging will only occur when the application is run in debug mode.  I recommend
+only adding this plugin in development since it's needless overhead in production.
+
+=head1 METHOD
+
+This plugin exposes the following public methods.
+
+=head2 querylog_table
+
+Returns an instance of L<Text::SimpleTable> that is setup to display the rows of querylog
+information.  You can override this if you trying to customize the querylog information.
+
+=head2 add_querylog_table_row
+
+Receives an instance of L<Text::SimpleTable>, and L<DBIx::Class::QueryLog::Analyzer> so
+that you can customize drawing a row of data.  Override if you are adding custom display
+information.
+
+=head1 AUTHOR
+ 
+John Napiorkowski L<email:jjnapiork@cpan.org>
+   
+=head1 SEE ALSO
+  
+L<DBIx::Class>, L<DBIx::Class::QueryLog>, L<DBIx::Class::QueryLog::Analyzer>, L<Catalyst>,
+L<Catalyst::Model::DBIC::Schema>, L<Catalyst::TraitFor::Model::DBIC::Schema::QueryLog>,
+ 
+=head1 COPYRIGHT & LICENSE
+  
+Copyright 2017, John Napiorkowski L<email:jjnapiork@cpan.org>
+  
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
+  
+=cut
+
 1;

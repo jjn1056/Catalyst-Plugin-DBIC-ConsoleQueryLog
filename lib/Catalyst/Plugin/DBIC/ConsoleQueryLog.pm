@@ -4,7 +4,7 @@ use Moo::Role;
 use Catalyst::Utils;
 use Text::SimpleTable;
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 my $_model_name = '';
 my $model_name = sub {
@@ -29,13 +29,34 @@ my $model = sub {
   }
 };
 
+my $querylog = sub {
+  my $c = shift;
+  my $model = $c->$model || return;
+  if($model->can('querylog')) {
+    return $model->querylog;
+  } else {
+    $c->log->info("You requested querylog for model $model but there's no querylog_analyzer");
+    return;
+  }
+};
+
+my $time_elapsed = sub {
+  my $c = shift;
+  return ($c->$querylog || return)->time_elapsed;
+};
+
+my $query_count = sub {
+  my $c = shift;
+  return ($c->$querylog || return)->count;
+};
+
 my $querylog_analyzer = sub {
   my $c = shift;
   my $model = $c->$model || return;
   if($model->can('querylog_analyzer')) {
     return $model->querylog_analyzer;
   } else {
-    $c->log->info("You requested querylog display for model $model but there's no querylog_analyzer");
+    $c->log->info("You requested querylog_analyzer for model $model but there's no querylog_analyzer");
     return;
   }
 };
@@ -54,19 +75,22 @@ after 'finalize', sub {
   foreach my $q (@sorted_queries) {
     $c->add_querylog_table_row($t, $q);
   }
-  $c->log->info( "SQL Profile Data:\n" . $t->draw . "\n" );
+  my $count = $c->$query_count;
+  my $time = sprintf('%0.6fs', $c->$time_elapsed);
+  my $q_display = $count > 1 ? 'queries':'query';
+  $c->log->info( "SQL Profile Data ($count $q_display / $time elapsed time):\n" . $t->draw . "\n" ) if @sorted_queries;
 };
 
 sub querylog_table {
-  my $column_width = Catalyst::Utils::term_width() - 6 - 18;
-  my $t = Text::SimpleTable->new( [ $column_width, 'SQL' ], [ 12, 'Time' ] );
+  my $column_width = Catalyst::Utils::term_width() - 6 - 16;
+  my $t = Text::SimpleTable->new( [ $column_width, 'SQL' ], [ 9, 'Time' ] );
   return $t;
 };
 
 sub add_querylog_table_row {
   my ($c, $t, $q) = @_;
   my $q_sql = $q->sql . ' : ' . join(', ', @{$q->params||[]});
-  my $q_total = sprintf('%0.6f', $q->time_elapsed);
+  my $q_total = sprintf('%0.6fs', $q->time_elapsed);
   $t->row($q_sql, $q_total);
 };
 
